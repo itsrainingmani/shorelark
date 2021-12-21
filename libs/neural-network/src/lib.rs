@@ -1,4 +1,4 @@
-use rand::Rng;
+use rand::{Rng, RngCore};
 
 pub struct Network {
     // a network is built from layers
@@ -23,10 +23,10 @@ impl Network {
     }
 
     // consecutive layers have matching inputs and outputs
-    pub fn random(layers: &[LayerTopology]) -> Self {
+    pub fn random(rng: &mut dyn RngCore, layers: &[LayerTopology]) -> Self {
         let layers = layers
             .windows(2)
-            .map(|layers| Layer::random(layers[0].neurons, layers[1].neurons))
+            .map(|layers| Layer::random(rng, layers[0].neurons, layers[1].neurons))
             .collect();
 
         Self { layers }
@@ -56,11 +56,11 @@ impl Layer {
             .collect()
     }
 
-    pub fn random(input_neurons: usize, output_neurons: usize) -> Self {
+    pub fn random(rng: &mut dyn RngCore, input_neurons: usize, output_neurons: usize) -> Self {
         let mut neurons = Vec::new();
 
         for _ in 0..output_neurons {
-            neurons.push(Neuron::random(input_neurons));
+            neurons.push(Neuron::random(rng, input_neurons));
         }
 
         Self { neurons }
@@ -87,8 +87,7 @@ impl Neuron {
         (self.bias + output).max(0.0)
     }
 
-    pub fn random(output_size: usize) -> Self {
-        let mut rng = rand::thread_rng();
+    pub fn random(rng: &mut dyn RngCore, output_size: usize) -> Self {
         let bias = rng.gen_range(-1.0..=1.0); // -1.0..=1.0 is a closed interval that matches 1.0 as well
 
         let weights = (0..output_size)
@@ -101,9 +100,23 @@ impl Neuron {
 
 #[cfg(test)]
 mod tests {
-    #[test]
-    fn it_works() {
-        let result = 2 + 2;
-        assert_eq!(result, 4);
+    use super::*;
+
+    mod random {
+        use super::*;
+
+        use rand::SeedableRng;
+        use rand_chacha::ChaCha8Rng;
+
+        #[test]
+        fn test_neuron_randomness() {
+            // Because we always use the same seed, our `rng` in here will
+            // always return the same set of values
+            let mut rng = ChaCha8Rng::from_seed(Default::default());
+            let neuron = Neuron::random(&mut rng, 4);
+
+            assert_eq!(neuron.bias, 0.0);
+            assert_eq!(neuron.weights, &[0.0, 0.0, 0.0, 0.0]);
+        }
     }
 }
