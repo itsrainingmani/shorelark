@@ -1,3 +1,5 @@
+use rand::Rng;
+
 pub struct Network {
     // a network is built from layers
     layers: Vec<Layer>,
@@ -20,6 +22,7 @@ impl Network {
             .fold(inputs, |inputs, layer| layer.propagate(inputs))
     }
 
+    // consecutive layers have matching inputs and outputs
     pub fn random(layers: &[LayerTopology]) -> Self {
         let layers = layers
             .windows(2)
@@ -85,9 +88,12 @@ impl Neuron {
     }
 
     pub fn random(output_size: usize) -> Self {
-        let bias = todo!();
+        let mut rng = rand::thread_rng();
+        let bias = rng.gen_range(-1.0..=1.0); // -1.0..=1.0 is a closed interval that matches 1.0 as well
 
-        let weights = (0..output_size).map(|_| todo!()).collect();
+        let weights = (0..output_size)
+            .map(|_| rng.gen_range(-1.0..=1.0))
+            .collect();
 
         Self { bias, weights }
     }
