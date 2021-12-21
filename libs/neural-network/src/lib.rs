@@ -3,6 +3,10 @@ pub struct Network {
     layers: Vec<Layer>,
 }
 
+pub struct LayerTopology {
+    pub neurons: usize,
+}
+
 impl Network {
     pub fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
         // for layer in &self.layers {
@@ -14,6 +18,15 @@ impl Network {
         self.layers
             .iter()
             .fold(inputs, |inputs, layer| layer.propagate(inputs))
+    }
+
+    pub fn random(layers: &[LayerTopology]) -> Self {
+        let layers = layers
+            .windows(2)
+            .map(|layers| Layer::random(layers[0].neurons, layers[1].neurons))
+            .collect();
+
+        Self { layers }
     }
 }
 
@@ -39,6 +52,16 @@ impl Layer {
             .map(|neuron| neuron.propagate(&inputs))
             .collect()
     }
+
+    pub fn random(input_neurons: usize, output_neurons: usize) -> Self {
+        let mut neurons = Vec::new();
+
+        for _ in 0..output_neurons {
+            neurons.push(Neuron::random(input_neurons));
+        }
+
+        Self { neurons }
+    }
 }
 
 struct Neuron {
@@ -59,6 +82,14 @@ impl Neuron {
             .map(|(input, weight)| input * weight)
             .sum::<f32>();
         (self.bias + output).max(0.0)
+    }
+
+    pub fn random(output_size: usize) -> Self {
+        let bias = todo!();
+
+        let weights = (0..output_size).map(|_| todo!()).collect();
+
+        Self { bias, weights }
     }
 }
 
