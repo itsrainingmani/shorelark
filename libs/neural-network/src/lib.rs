@@ -25,14 +25,19 @@ struct Layer {
 impl Layer {
     fn propagate(&self, inputs: Vec<f32>) -> Vec<f32> {
         // preallocate our vector since we know how many output value we will have
-        let mut outputs = Vec::with_capacity(self.neurons.len());
+        // let mut outputs = Vec::with_capacity(self.neurons.len());
 
-        for neuron in &self.neurons {
-            let output = neuron.propagate(&inputs);
-            outputs.push(output);
-        }
+        // for neuron in &self.neurons {
+        //     let output = neuron.propagate(&inputs);
+        //     outputs.push(output);
+        // }
 
-        outputs
+        // outputs
+
+        self.neurons
+            .iter()
+            .map(|neuron| neuron.propagate(&inputs))
+            .collect()
     }
 }
 
