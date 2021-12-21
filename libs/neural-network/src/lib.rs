@@ -49,7 +49,16 @@ struct Neuron {
 
 impl Neuron {
     fn propagate(&self, inputs: &[f32]) -> f32 {
-        todo!()
+        // since we iterate through self.weights using length from inputs,
+        // assert that they are of equal length
+        // could error handle but that's too much effort
+        assert_eq!(inputs.len(), self.weights.len());
+        let output = inputs
+            .iter()
+            .zip(&self.weights)
+            .map(|(input, weight)| input * weight)
+            .sum::<f32>();
+        (self.bias + output).max(0.0)
     }
 }
 
