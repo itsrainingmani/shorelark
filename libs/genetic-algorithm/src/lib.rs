@@ -1,5 +1,5 @@
 use rand::seq::SliceRandom;
-use rand::RngCore;
+use rand::{Rng, RngCore};
 
 pub struct GeneticAlgorithm<S> {
     selection_method: S,
@@ -56,6 +56,48 @@ impl Chromosome {
 
     pub fn iter_mut(&mut self) -> impl Iterator<Item = &mut f32> {
         self.genes.iter_mut()
+    }
+}
+
+pub trait CrossoverMethod {
+    fn crossover(
+        &self,
+        rng: &mut dyn RngCore,
+        parent_a: &Chromosome,
+        parent_b: &Chromosome,
+    ) -> Chromosome;
+}
+
+#[derive(Clone, Debug)]
+pub struct UniformCrossover;
+
+impl UniformCrossover {
+    pub fn new() -> Self {
+        Self
+    }
+}
+
+impl CrossoverMethod for UniformCrossover {
+    fn crossover(
+        &self,
+        rng: &mut dyn RngCore,
+        parent_a: &Chromosome,
+        parent_b: &Chromosome,
+    ) -> Chromosome {
+        let mut child = Vec::new();
+        let gene_count = parent_a.len();
+
+        for gene_idx in 0..gene_count {
+            let gene = if rng.gen_bool(0.5) {
+                parent_a[gene_idx]
+            } else {
+                parent_b[gene_idx]
+            };
+
+            child.push(gene);
+        }
+
+        child.into_iter().collect()
     }
 }
 
