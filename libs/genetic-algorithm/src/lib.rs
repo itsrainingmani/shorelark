@@ -77,6 +77,14 @@ impl Index<usize> for Chromosome {
     }
 }
 
+impl FromIterator<f32> for Chromosome {
+    fn from_iter<T: IntoIterator<Item = f32>>(iter: T) -> Self {
+        Self {
+            genes: iter.into_iter().collect(),
+        }
+    }
+}
+
 pub trait CrossoverMethod {
     fn crossover(
         &self,
@@ -272,6 +280,18 @@ mod tests {
         fn test() {
             let chromosome = chromosome();
 
+            assert_eq!(chromosome[0], 3.0);
+            assert_eq!(chromosome[1], 1.0);
+            assert_eq!(chromosome[2], 2.0);
+        }
+    }
+
+    mod from_iterator {
+        use super::*;
+
+        #[test]
+        fn test() {
+            let chromosome: Chromosome = vec![3.0, 1.0, 2.0].into_iter().collect();
             assert_eq!(chromosome[0], 3.0);
             assert_eq!(chromosome[1], 1.0);
             assert_eq!(chromosome[2], 2.0);
