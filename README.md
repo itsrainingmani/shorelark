@@ -89,3 +89,31 @@ Now we look at the call site of the function
 //       |        type argument
 //       lifetime argument
 ```
+
+## The Night Train
+
+In the `IntoIterator` implementation for Chromosome, we have a line that looks something like this -
+
+```rust
+impl IntoIterator for Chromosome {
+    /*  */
+
+    type IntoIter = impl Iterator<Item = f32>;
+
+    /*  */
+}
+```
+
+In order to enable this, we use a `nightly` feature called `min_type_alias_impl_trait` which allows us to use `impl Trait` in places such as associated types.
+
+Otherwise, we would have to figure out the type on our own
+
+```rust
+impl IntoIterator for Chromosome {
+    /*  */
+
+    type IntoIter = std::vec::IntoIter<f32>;
+
+    /*  */
+}
+```
