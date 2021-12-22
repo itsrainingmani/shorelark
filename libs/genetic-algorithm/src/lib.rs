@@ -1,3 +1,6 @@
+use rand::seq::SliceRandom;
+use rand::RngCore;
+
 pub struct GeneticAlgorithm;
 
 // The fitness score is a property of an individual
@@ -9,9 +12,28 @@ pub trait Individual {
 
 // Make the selection method generic so user can use any algo they want
 pub trait SelectionMethod {
-    fn select<'a, I>(&self, population: &'a [I]) -> &'a I
+    fn select<'a, I>(&self, rng: &mut dyn RngCore, population: &'a [I]) -> &'a I
     where
         I: Individual;
+}
+
+pub struct RouletteWheelSelection;
+
+impl RouletteWheelSelection {
+    pub fn new() -> Self {
+        Self
+    }
+}
+
+impl SelectionMethod for RouletteWheelSelection {
+    fn select<'a, I>(&self, rng: &mut dyn RngCore, population: &'a [I]) -> &'a I
+    where
+        I: Individual,
+    {
+        population
+            .choose_weighted(rng, |individual| individual.fitness())
+            .expect("got an empty population")
+    }
 }
 
 impl GeneticAlgorithm {
