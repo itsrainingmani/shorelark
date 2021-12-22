@@ -2,7 +2,7 @@
 #![feature(min_type_alias_impl_trait)]
 
 pub use self::{
-    individual::*
+    individual::*, selection::*
 };
 
 use std::iter::FromIterator;
@@ -12,35 +12,10 @@ use rand::seq::SliceRandom;
 use rand::{Rng, RngCore};
 
 mod individual;
+mod selection;
 
 pub struct GeneticAlgorithm<S> {
     selection_method: S,
-}
-
-// Make the selection method generic so user can use any algo they want
-pub trait SelectionMethod {
-    fn select<'a, I>(&self, rng: &mut dyn RngCore, population: &'a [I]) -> &'a I
-    where
-        I: Individual;
-}
-
-pub struct RouletteWheelSelection;
-
-impl RouletteWheelSelection {
-    pub fn new() -> Self {
-        Self
-    }
-}
-
-impl SelectionMethod for RouletteWheelSelection {
-    fn select<'a, I>(&self, rng: &mut dyn RngCore, population: &'a [I]) -> &'a I
-    where
-        I: Individual,
-    {
-        population
-            .choose_weighted(rng, |individual| individual.fitness())
-            .expect("got an empty population")
-    }
 }
 
 #[derive(Clone, Debug)]
