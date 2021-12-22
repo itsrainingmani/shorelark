@@ -56,3 +56,36 @@ fn decompose(Person { name, mut eyeball_radius }: Person) {
 Bindings, contrary to types are local to a function. When the type is mutable, you can modify the thing being referenced. But if the binding remains immutable, you cannot modify _which_ thing is being referenced.
 
 On the other hand, when the binding is mutable, you **can** change which thing is referenced. But if the type remains immutable, you cannot modify the thing itself.
+
+## Type Parameters
+
+Here we have a rust function definition
+
+```rust
+// visibility  generics   _ function parameters
+// |          _|     ____|  (or just "parameters")
+// |         |      |
+// v-v       v-----vv----------v
+   pub fn foo<'a, T>(bar: &'a T) { /* ... */ }
+//            ^^  ^  ^--------^
+//            |   |  |
+//            |   |  function parameter
+//            |   |  (or just "parameter")
+//            |   type parameter
+//            lifetime parameter
+```
+
+Reading this aloud, we get - "_public function `foo` is generic over a lifetime `a` and type `T` and accepts a single parameter named `bar` that is a reference to `T`_"
+
+Now we look at the call site of the function
+
+```rust
+// v-----------------------v call site
+   foo::<'static, f32>(&1.0);
+//       ^-----^  ^-^  ^--^
+//       |        |    |
+//       |        |    function argument
+//       |        |    (or just "argument")
+//       |        type argument
+//       lifetime argument
+```
