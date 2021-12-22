@@ -14,6 +14,8 @@ pub struct GeneticAlgorithm<S> {
 // allows us to encapsulate all individual-oriented attributes into a single trait
 // making it easy for users to discover what they need to provide
 pub trait Individual {
+    // crossover doesnt actually happen on an individual, rather on their chromosomes
+    fn chromosome(&self) -> &Chromosome;
     fn fitness(&self) -> f32;
 }
 
@@ -96,7 +98,7 @@ impl FromIterator<f32> for Chromosome {
 
 impl IntoIterator for Chromosome {
     type Item = f32;
-    type IntoIter = impl Iterator<Item = f32>;
+    type IntoIter = impl Iterator<Item = f32>; //existential type
 
     fn into_iter(self) -> Self::IntoIter {
         self.genes.into_iter()
@@ -163,12 +165,12 @@ where
 
         (0..population.len())
             .map(|_| {
-                // TODO selection
                 let parent_a = self.selection_method.select(rng, population);
                 let parent_b = self.selection_method.select(rng, population);
 
                 // TODO crossover
                 // TODO mutation
+                // TODO convert `Chromosome` back into `Individual`
                 todo!()
             })
             .collect()
@@ -190,6 +192,10 @@ impl TestIndividual {
 
 #[cfg(test)]
 impl Individual for TestIndividual {
+    fn chromosome(&self) -> &Chromosome {
+        panic!("not supported for TestIndividual")
+    }
+
     fn fitness(&self) -> f32 {
         self.fitness
     }
@@ -313,6 +319,24 @@ mod tests {
             assert_eq!(chromosome[0], 3.0);
             assert_eq!(chromosome[1], 1.0);
             assert_eq!(chromosome[2], 2.0);
+        }
+    }
+
+    mod into_iterator {
+        use super::*;
+
+        #[test]
+        fn test() {
+            let chromosome = Chromosome {
+                genes: vec![3.0, 1.0, 2.0]
+            };
+
+            let genes: Vec<_> = chromosome.into_iter().collect();
+
+            assert_eq!(genes.len(), 3);
+            assert_eq!(genes[0], 3.0);
+            assert_eq!(genes[1], 1.0);
+            assert_eq!(genes[2], 2.0);
         }
     }
 }
