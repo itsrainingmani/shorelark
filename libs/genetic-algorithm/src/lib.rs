@@ -103,14 +103,16 @@ mod tests {
 
         // Since we want to assess probability, instead of evoking `.select()` once,
         // we can do it many times and look at the histogram
-        let mut actual_histogram = BTreeMap::new();
 
-        for _ in 0..1000 {
-            // fitness score is cast from f32 to i32 since floating-point numbers in Rust don't implement Ord trait
-            let fitness = method.select(&mut rng, &population).fitness() as i32;
+        // use Iterator::fold() to simplify the loop
+        let actual_histogram: BTreeMap<i32, _> = (0..1000)
+            .map(|_| method.select(&mut rng, &population))
+            .fold(Default::default(), |mut histogram, individual| {
+                // as _ asks the compiler to infer what type is required and cast this value into it
+                *histogram.entry(individual.fitness() as _).or_default() += 1;
 
-            *actual_histogram.entry(fitness).or_insert(0) += 1;
-        }
+                histogram
+            });
 
         let expected_histogram = maplit::btreemap! {
             // (fitness, how many times this fitness has been chosen)
