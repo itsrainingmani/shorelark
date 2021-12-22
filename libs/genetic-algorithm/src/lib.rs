@@ -112,14 +112,14 @@ mod tests {
             *actual_histogram.entry(fitness).or_insert(0) += 1;
         }
 
-        let expected_histogram = BTreeMap::from_iter(vec![
+        let expected_histogram = maplit::btreemap! {
             // (fitness, how many times this fitness has been chosen)
             // higher fitness scores should be chosen more frequently
-            (1, 98),
-            (2, 202),
-            (3, 278),
-            (4, 422),
-        ]);
+            1 => 98,
+            2 => 202,
+            3 => 278,
+            4 => 422,
+        };
 
         assert_eq!(actual_histogram, expected_histogram);
     }
