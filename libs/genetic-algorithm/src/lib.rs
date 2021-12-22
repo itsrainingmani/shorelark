@@ -1,7 +1,9 @@
 use rand::seq::SliceRandom;
 use rand::RngCore;
 
-pub struct GeneticAlgorithm;
+pub struct GeneticAlgorithm<S> {
+    selection_method: S,
+}
 
 // The fitness score is a property of an individual
 // allows us to encapsulate all individual-oriented attributes into a single trait
@@ -36,13 +38,16 @@ impl SelectionMethod for RouletteWheelSelection {
     }
 }
 
-impl GeneticAlgorithm {
-    pub fn new() -> Self {
-        Self
+impl<S> GeneticAlgorithm<S>
+where
+    S: SelectionMethod,
+{
+    pub fn new(selection_method: S) -> Self {
+        Self { selection_method }
     }
 
     // we want this to be generic, so we use a type paramter
-    pub fn evolve<I>(&self, population: &[I]) -> Vec<I>
+    pub fn evolve<I>(&self, rng: &mut dyn RngCore, population: &[I]) -> Vec<I>
     where
         I: Individual,
     {
@@ -52,6 +57,9 @@ impl GeneticAlgorithm {
         (0..population.len())
             .map(|_| {
                 // TODO selection
+                let parent_a = self.selection_method.select(rng, population);
+                let parent_b = self.selection_method.select(rng, population);
+
                 // TODO crossover
                 // TODO mutation
                 todo!()
@@ -87,7 +95,7 @@ mod tests {
     use rand::SeedableRng;
     use rand_chacha::ChaCha8Rng;
 
-    use std::{collections::BTreeMap, iter::FromIterator};
+    use std::collections::BTreeMap;
 
     #[test]
     fn test() {
