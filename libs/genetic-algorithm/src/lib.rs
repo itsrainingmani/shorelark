@@ -59,3 +59,67 @@ impl GeneticAlgorithm {
             .collect()
     }
 }
+
+#[cfg(test)]
+#[derive(Clone, Debug)]
+pub struct TestIndividual {
+    fitness: f32,
+}
+
+#[cfg(test)]
+impl TestIndividual {
+    pub fn new(fitness: f32) -> Self {
+        Self { fitness }
+    }
+}
+
+#[cfg(test)]
+impl Individual for TestIndividual {
+    fn fitness(&self) -> f32 {
+        self.fitness
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    use rand::SeedableRng;
+    use rand_chacha::ChaCha8Rng;
+
+    use std::{collections::BTreeMap, iter::FromIterator};
+
+    #[test]
+    fn test() {
+        let method = RouletteWheelSelection::new();
+        let mut rng = ChaCha8Rng::from_seed(Default::default());
+
+        let population = vec![
+            TestIndividual::new(2.0),
+            TestIndividual::new(1.0),
+            TestIndividual::new(4.0),
+            TestIndividual::new(3.0),
+        ];
+
+        // Since we want to assess probability, instead of evoking `.select()` once,
+        // we can do it many times and look at the histogram
+        let mut actual_histogram = BTreeMap::new();
+
+        for _ in 0..1000 {
+            // fitness score is cast from f32 to i32 since floating-point numbers in Rust don't implement Ord trait
+            let fitness = method.select(&mut rng, &population).fitness() as i32;
+
+            *actual_histogram.entry(fitness).or_insert(0) += 1;
+        }
+
+        let expected_histogram = BTreeMap::from_iter(vec![
+            // (fitness, how many times this fitness has been chosen)
+            (1, 0),
+            (2, 0),
+            (3, 0),
+            (4, 0),
+        ]);
+
+        assert_eq!(actual_histogram, expected_histogram);
+    }
+}
