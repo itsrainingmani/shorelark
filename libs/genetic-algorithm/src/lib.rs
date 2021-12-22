@@ -130,20 +130,14 @@ impl CrossoverMethod for UniformCrossover {
         parent_a: &Chromosome,
         parent_b: &Chromosome,
     ) -> Chromosome {
-        let mut child = Vec::new();
-        let gene_count = parent_a.len();
+        assert_eq!(parent_a.len(), parent_b.len());
+        let parent_a = parent_a.iter();
+        let parent_b = parent_b.iter();
 
-        for gene_idx in 0..gene_count {
-            let gene = if rng.gen_bool(0.5) {
-                parent_a[gene_idx]
-            } else {
-                parent_b[gene_idx]
-            };
-
-            child.push(gene);
-        }
-
-        child.into_iter().collect()
+        parent_a
+            .zip(parent_b)
+            .map(|(&a, &b)| if rng.gen_bool(0.5) {a} else {b})
+            .collect()
     }
 }
 
