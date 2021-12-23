@@ -1,0 +1,17 @@
+[package]
+name = "lib-simulation-wasm"
+version = "0.1.0"
+edition = "2021"
+
+# cdylib - C Dynamic Library
+# tells compiler the following
+# 1. that it should export only those functions which are intended to be called from outside, ignoring Rust-specific internal stuff.
+# 2. that it should generate a dynamic library — that is: a piece of code that will get invoked by somebody else.
+
+[lib]
+crate-type = ["cdylib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+wasm-bindgen = "0.2" # wasm-bindgen provides types and macros for web-assembly aware code
