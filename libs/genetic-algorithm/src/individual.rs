@@ -11,29 +11,43 @@ pub trait Individual {
 }
 
 #[cfg(test)]
-#[derive(Clone, Debug)]
-pub struct TestIndividual {
-    fitness: f32,
+#[derive(Clone, Debug, PartialEq)]
+pub enum TestIndividual {
+    // for tests that require access to Chromosome
+    WithChromosome { chromosome: Chromosome },
+
+    // for tests that don't require access to Chromosome
+    WithFitness { fitness: f32 },
 }
 
 #[cfg(test)]
 impl TestIndividual {
     pub fn new(fitness: f32) -> Self {
-        Self { fitness }
+        Self::WithFitness { fitness }
     }
 }
 
 #[cfg(test)]
 impl Individual for TestIndividual {
     fn create(chromosome: Chromosome) -> Self {
-        todo!()
+        Self::WithChromosome { chromosome }
     }
 
     fn chromosome(&self) -> &Chromosome {
-        panic!("not supported for TestIndividual")
+        match self {
+            Self::WithChromosome { chromosome } => chromosome,
+
+            Self::WithFitness { .. } => {
+                panic!("not supported for TestIndividual::WithFitness")
+            }
+        }
     }
 
     fn fitness(&self) -> f32 {
-        self.fitness
+        match self {
+            Self::WithChromosome { chromosome } => chromosome.iter().sum(),
+
+            Self::WithFitness { fitness } => *fitness,
+        }
     }
 }
