@@ -54,7 +54,9 @@ impl FromIterator<f32> for Chromosome {
 
 impl IntoIterator for Chromosome {
     type Item = f32;
-    type IntoIter = impl Iterator<Item = f32>; //existential type
+    // type IntoIter = impl Iterator<Item = f32>; //existential type
+    // stop using the min_type_alias_impl_trait feature since it's breaking rust analyzer
+    type IntoIter = std::vec::IntoIter<f32>;
 
     fn into_iter(self) -> Self::IntoIter {
         self.genes.into_iter()
@@ -147,7 +149,7 @@ mod tests {
         #[test]
         fn test() {
             let chromosome = Chromosome {
-                genes: vec![3.0, 1.0, 2.0]
+                genes: vec![3.0, 1.0, 2.0],
             };
 
             let genes: Vec<_> = chromosome.into_iter().collect();
