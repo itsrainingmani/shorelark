@@ -1,17 +1,15 @@
-#![feature(crate_visibility_modifier)]
-#![feature(min_type_alias_impl_trait)]
+// #![feature(crate_visibility_modifier)]
+// #![feature(min_type_alias_impl_trait)]
 
-pub use self::{
-    individual::*, selection::*, chromosome::*, crossover::*
-};
+pub use self::{chromosome::*, crossover::*, individual::*, selection::*};
 
 use rand::seq::SliceRandom;
 use rand::{Rng, RngCore};
 
-mod individual;
-mod selection;
 mod chromosome;
 mod crossover;
+mod individual;
+mod selection;
 
 pub struct GeneticAlgorithm<S> {
     selection_method: S,
