@@ -1,7 +1,5 @@
 use crate::*;
 
-use super::MutationMethod;
-
 #[derive(Clone, Debug)]
 pub struct GaussianMutation {
     /// Probability of changing a gene:
