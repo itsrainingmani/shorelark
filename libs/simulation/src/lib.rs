@@ -14,7 +14,7 @@ pub struct World {
 #[derive(Debug)]
 pub struct Animal {
     position: na::Point2<f32>,
-    rotation: na::Point2<f32>,
+    rotation: na::Rotation2<f32>,
     speed: f32,
 }
 
@@ -67,7 +67,7 @@ impl Animal {
         self.position
     }
 
-    pub fn rotation(&self) -> na::Point2<f32> {
+    pub fn rotation(&self) -> na::Rotation2<f32> {
         self.rotation
     }
 }
