@@ -1,3 +1,5 @@
+pub use self::gaussian::*;
+
 use crate::*;
 
 mod gaussian;
