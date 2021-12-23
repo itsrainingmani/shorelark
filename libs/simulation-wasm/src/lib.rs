@@ -1,5 +1,6 @@
 use lib_simulation as sim;
 use rand::prelude::*;
+use serde::Serialize;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -8,14 +9,12 @@ pub struct Simulation {
     sim: sim::Simulation,
 }
 
-#[wasm_bindgen]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct World {
     pub animals: Vec<Animal>,
 }
 
-#[wasm_bindgen]
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct Animal {
     pub x: f32,
     pub y: f32,
@@ -31,8 +30,9 @@ impl Simulation {
         Self { rng, sim }
     }
 
-    pub fn world(&self) -> World {
-        World::from(self.sim.world())
+    pub fn world(&self) -> JsValue {
+        let world = World::from(self.sim.world());
+        JsValue::from_serde(&world).unwrap()
     }
 }
 
