@@ -12,7 +12,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/rustwasm/create-wasm-app.git"
+		"url": "git+https://github.com/itsrainingmani/shorelark.git"
 	},
 	"keywords": [
 		"webassembly",
@@ -20,14 +20,16 @@
 		"rust",
 		"webpack"
 	],
-	"author": "Ashley Williams <ashley666ashley@gmail.com>",
+	"author": "Manikandan Sundararajan <mani@hey.com>",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/rustwasm/create-wasm-app/issues"
+		"url": "https://github.com/itsrainingmani/shorelark/issues"
 	},
-	"homepage": "https://github.com/rustwasm/create-wasm-app#readme",
+	"homepage": "https://github.com/itsrainingmani/shorelark",
+	"dependencies": {
+		"lib-simulation-wasm": "file:../libs/simulation-wasm/pkg"
+	},
 	"devDependencies": {
-		"lib-simulation-wasm": "file:../libs/simulation-wasm/pkg",
 		"hello-wasm-pack": "^0.1.0",
 		"webpack": "^4.29.3",
 		"webpack-cli": "^3.1.0",
