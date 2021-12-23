@@ -34,3 +34,68 @@ impl MutationMethod for GaussianMutation {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rand::SeedableRng;
+    use rand_chacha::ChaCha8Rng;
+
+    fn actual(chance: f32, coeff: f32) -> Vec<f32> {
+        let mut child = vec![1.0, 2.0, 3.0, 4.0, 5.0].into_iter().collect();
+
+        let mut rng = ChaCha8Rng::from_seed(Default::default());
+
+        GaussianMutation::new(chance, coeff).mutate(&mut rng, &mut child);
+
+        child.into_iter().collect()
+    }
+
+    mod given_zero_chance {
+        mod and_zero_coefficient {
+            #[test]
+            fn does_not_change_the_original_chromosome() {
+                todo!();
+            }
+        }
+
+        mod and_nonzero_coefficient {
+            #[test]
+            fn does_not_change_the_original_chromosome() {
+                todo!();
+            }
+        }
+    }
+
+    mod given_fifty_fifty_chance {
+        mod and_zero_coefficient {
+            #[test]
+            fn does_not_change_the_original_chromosome() {
+                todo!();
+            }
+        }
+
+        mod and_nonzero_coefficient {
+            #[test]
+            fn slightly_changes_the_original_chromosome() {
+                todo!();
+            }
+        }
+    }
+
+    mod given_max_chance {
+        mod and_zero_coefficient {
+            #[test]
+            fn does_not_change_the_original_chromosome() {
+                todo!();
+            }
+        }
+
+        mod and_nonzero_coefficient {
+            #[test]
+            fn slightly_changes_the_original_chromosome() {
+                todo!();
+            }
+        }
+    }
+}
